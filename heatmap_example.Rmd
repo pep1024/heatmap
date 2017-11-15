@@ -10,21 +10,19 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Goal
-Plot a heatmap of a random matrix of $n \times m$ elements
+Plot a heatmap of a random matrix of $n \times m$ elements and decorate it with grids lines, texts and personalized axis
 
 ## Matrix generation
 ```{r}
 set.seed(1023)
 nc <- 2
 nr <- 3
-matrix_example <- matrix(runif(nr * nc, -1, 1), nr, nc)
 matrix_example <- matrix(1:(nr * nc), nr, nc, byrow = TRUE)
 matrix_example
 ```
 
 ## Set names
 ```{r}
-
 row_names <- paste0("r", 0:(nr - 1))
 col_names <- paste0("d", 0:(nc - 1))
 colnames(matrix_example) <- col_names
@@ -51,7 +49,7 @@ heatmap(matrix_example, Rowv = NA, Colv = NA, revC = TRUE
     , scale = "none"
     , cexRow = 1, cexCol = 1
     , col = my_palette
-    , xlab = "r days"
+    , xlab = "r •days"
     , ylab = "d days"
     , main = "Heatmap of a Matrix"
 )
@@ -59,12 +57,12 @@ par(op)
 ```
 
 ## Matrix as a plot
-```{r}
-op <- par(no.readonly = TRUE)
+```{r, fig.height=1, fig.width=2}
+op <- par(no.readonly = TRUE, cex = 0.7, mar = rep(0, 4))
 plot(1,1, typ = 'n', axes = FALSE, xlab = '', ylab = '', xlim = c(0, nc), ylim = c(0, nr))
 matrix_text <- paste(capture.output(print(matrix_example)), collapse = "\n")
-text(nc / 2, nr / 2, "matrix_example")
-text(nc / 2, nr / 2 - 0.5, matrix_text)
+text(nc / 2, nr - 0.5, "matrix_example")
+text(nc / 2, nr - 0.8, matrix_text, adj = c(0.5, 1))
 par(op)
 ```
 
@@ -76,7 +74,8 @@ In order to decorate heatmap function result with new elements like grids or tex
 ```{r}
 par(cex.main = 0.6) #reduced size of the main title
 
-heatmap(matrix_example, Rowv = NA, Colv = NA, revC = TRUE
+layout_dimensions <- capture.output(
+    heatmap(matrix_example, Rowv = NA, Colv = NA, revC = TRUE
     , labCol = rep("", nc) # to control the type of column labels
     , labRow = rep("", nr) # to control the type of row labels
     , scale = "none"
@@ -84,6 +83,11 @@ heatmap(matrix_example, Rowv = NA, Colv = NA, revC = TRUE
     , col = my_palette
     , main = "Heatmap of a Matrix" #In case you want a main title
     , verbose = TRUE)
+)
+```
+
+```{r}
+layout_dimensions
 ```
 
 With the layout info heigth, width and mat, you can build a new layout on top of heatmap that takes care of axis, labels, grids and texts
@@ -214,7 +218,7 @@ par(op)
 ```{r}
 op <- par(no.readonly = TRUE)
 par(mai = c(0, 0, 0.42, 0.42))
-par(plt = c(0.85, 0.9, 0.05, 0.95))
+par(plt = c(0.85, 0.9, 0.25, 0.75))
 m_legend <- seq(range(matrix_example)[1], range(matrix_example)[2], length.out = 6)
 dim(m_legend) <- c(1, 6)
 image(1, 1:6
@@ -281,7 +285,7 @@ for (i in 1:nc) {
 
 par(op)
 par(mai = c(0, 0, 0.42, 0.42))
-par(plt = c(0.85, 0.9, 0.05, 0.95))
+par(plt = c(0.85, 0.9, 0.25, 0.75))
 par(new = TRUE)
 m_legend <- seq(range(matrix_example)[1], range(matrix_example)[2], length.out = 6)
 dim(m_legend) <- c(1, 6)
@@ -298,4 +302,9 @@ axis(side = 4, at = 1:6, labels = paste(as.vector(m_legend), "%"),
 
 ```
 
+## Next steps
 
+1. more color palettes
+2. Use heatmap option to scale and center matrix values along row direction (scale = "row") or vertical direction (scale = "column")
+3. Use ColSideColors and RowSideColors to generate side bars with values.
+4. Explore dendogram use
