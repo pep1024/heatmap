@@ -304,7 +304,7 @@ axis(side = 4, at = 1:6, labels = paste(as.vector(m_legend), "%"),
 
 ## Next steps
 
-1. more color palettes
+1. More color palettes
 2. Use heatmap option to scale and center matrix values along row direction (scale = "row") or vertical direction (scale = "column")
 3. Use ColSideColors and RowSideColors to generate side bars with values.
 4. Explore dendogram use
