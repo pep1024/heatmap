@@ -9,15 +9,14 @@ output:
     keep_md: true
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+
 
 ## Goal
 Plot a heatmap of a random matrix of $n \times m$ elements and decorate it with grids lines, texts and personalized axis
 
 ## Matrix generation
-```{r}
+
+```r
 set.seed(1023)
 nc <- 2
 nr <- 3
@@ -25,8 +24,16 @@ matrix_example <- matrix(1:(nr * nc), nr, nc, byrow = TRUE)
 matrix_example
 ```
 
+```
+##      [,1] [,2]
+## [1,]    1    2
+## [2,]    3    4
+## [3,]    5    6
+```
+
 ## Set names
-```{r}
+
+```r
 row_names <- paste0("r", 0:(nr - 1))
 col_names <- paste0("d", 0:(nc - 1))
 colnames(matrix_example) <- col_names
@@ -34,8 +41,16 @@ rownames(matrix_example) <- row_names
 matrix_example
 ```
 
+```
+##    d0 d1
+## r0  1  2
+## r1  3  4
+## r2  5  6
+```
+
 ## Color scale
-```{r}
+
+```r
 my_palette <- colorRampPalette(c("red", "yellow", "green"))(n = 6)
 color_breaks <- c(
     seq(1, 2, length = 2),  # for red
@@ -47,7 +62,8 @@ color_breaks <- c(
 To start playing with heatmap, set Rowv and Colw to NA to avoid showing the dendogram. In addition, I recommend to set `revC = TRUE` to get a heatmap that mimics the matrix configuration from top to bottom (1 to n) and form left to right (1 to m). Also chose scale = 'none' to have the image of actual values in the matrix.
 
 
-```{r}
+
+```r
 op <- par(cex.main = 0.6, font.main = 1)
 heatmap(matrix_example, Rowv = NA, Colv = NA, revC = TRUE 
     , scale = "none"
@@ -57,16 +73,27 @@ heatmap(matrix_example, Rowv = NA, Colv = NA, revC = TRUE
     , ylab = "r days"
     , main = "Heatmap of a Matrix"
 )
+```
+
+![](heatmap_example_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+
+```r
 par(op)
 ```
 
 ## Matrix as a plot
-```{r, fig.height=1, fig.width=2}
+
+```r
 op <- par(no.readonly = TRUE, cex = 0.7, mar = rep(0, 4))
 plot(1,1, typ = 'n', axes = FALSE, xlab = '', ylab = '', xlim = c(0, nc), ylim = c(0, nr))
 matrix_text <- paste(capture.output(print(matrix_example)), collapse = "\n")
 text(nc / 2, nr - 0.5, "matrix_example")
 text(nc / 2, nr - 0.8, matrix_text, adj = c(0.5, 1))
+```
+
+![](heatmap_example_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+
+```r
 par(op)
 ```
 
@@ -75,7 +102,8 @@ par(op)
 
 In order to decorate heatmap function result with new elements like grids or texts, run teh heatmap function with verbose option = TRUE
 
-```{r}
+
+```r
 par(cex.main = 0.6) #reduced size of the main title
 
 layout_dimensions <- capture.output(
@@ -90,13 +118,24 @@ layout_dimensions <- capture.output(
 )
 ```
 
-```{r}
+![](heatmap_example_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+
+
+```r
 layout_dimensions
+```
+
+```
+## [1] "layout: widths =  0.05 4 , heights =  0.25 4 ; lmat="
+## [2] "     [,1] [,2]"                                      
+## [3] "[1,]    0    3"                                      
+## [4] "[2,]    2    1"
 ```
 
 With the layout info heigth, width and mat, you can build a new layout on top of heatmap that takes care of axis, labels, grids and texts
 
-```{r}
+
+```r
 par(cex.main = 0.6)
 
 lmat <- matrix(c(4, 2, 3, 1), 2, 2, byrow = TRUE) 
@@ -131,8 +170,11 @@ for (i in 1:nc) {
 }
 ```
 
+![](heatmap_example_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
 
-```{r}
+
+
+```r
 par(cex.main = 0.6)
 heatmap(matrix_example, Rowv = NA, Colv = NA, revC = TRUE
     , labCol = rep("", 2)
@@ -180,12 +222,15 @@ for (i in 1:nc) {
 }
 ```
 
+![](heatmap_example_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
+
 
 ## Element (1,1) at top left corner
 
 Another possibility is to use directly the image function and create your own heatmap
 
-```{r}
+
+```r
 par(mfrow = c(1, 2))
 op <- par(no.readonly = TRUE)
 par(pty = 's')
@@ -215,11 +260,17 @@ plot(1,1, typ = 'n', axes = FALSE, xlab = '', ylab = '', xlim = c(0, 2), ylim = 
 matrix_text <- paste(capture.output(print(matrix_example)), collapse = "\n")
 text(1, 1.8, "matrix_example")
 text(1, 1, matrix_text)
+```
+
+![](heatmap_example_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
+
+```r
 par(op)
 ```
 
 ## Vertical legend
-```{r}
+
+```r
 op <- par(no.readonly = TRUE)
 par(mai = c(0, 0, 0.42, 0.42))
 par(plt = c(0.85, 0.9, 0.25, 0.75))
@@ -237,8 +288,11 @@ axis(side = 4, at = 1:6, labels = as.vector(m_legend),
     las = 1, cex.axis = 0.8, tick = TRUE)
 ```
 
+![](heatmap_example_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+
 ## Horizontal legend
-```{r}
+
+```r
 op <- par(no.readonly = TRUE)
 par(mai = c(0.42, 0, 0, 0))
 par(plt = c(0.05, 0.95, 0.1, 0.15))
@@ -255,13 +309,15 @@ image(1:6, 1:2
 
 axis(side = 1, at = 1:6, 
     labels = as.vector(m_legend[1, 1:6]), las = 1, cex.axis = 0.8, tick = TRUE)
-
 ```
+
+![](heatmap_example_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
 
 
 
 ## Same image including 0
-```{r}
+
+```r
 op <- par(no.readonly = TRUE)
 par(pty = 's')
 image(0:nc, 0:nr
@@ -303,8 +359,9 @@ image(1, 1:6
 
 axis(side = 4, at = 1:6, labels = paste(as.vector(m_legend), "%"),
     las = 1, cex.axis = 0.8, tick = TRUE)
-
 ```
+
+![](heatmap_example_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
 
 ## Next steps
 

@@ -1,0 +1,5 @@
+heatmap
+
+Decorated Heatmap
+
+Plot a heatmap of a random matrix of (n,m) elements and decorate it with grid lines, texts and personalized axis.
